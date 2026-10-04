@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Seberapa Kenal Kamu Sama Aku?</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #ffd6e7, #d9e7ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff4f91;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ffd0df;
+            border-radius: 12px;
+            outline: none;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #ff5c9a;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ff397f;
+        }
+
+        .question {
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .option {
+            background: #f7f7f7;
+            border: 2px solid #eee;
+            padding: 13px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option:hover {
+            background: #ffe8f0;
+            border-color: #ff80ad;
+        }
+
+        .progress {
+            text-align: center;
+            color: #ff4f91;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .result {
+            text-align: center;
+        }
+
+        .score {
+            font-size: 45px;
+            font-weight: bold;
+            color: #ff4f91;
+            margin: 20px 0;
+        }
+
+        .result-text {
+            font-size: 17px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HALAMAN AWAL -->
+    <div id="startPage">
+
+        <h1>Seberapa Kenal Kamu Sama Aku?</h1>
+
+        <p class="subtitle">
+            Jawab 20 pertanyaan dan lihat seberapa kenal kamu sama aku 👀
+        </p>
+
+        <input 
+            type="text" 
+            id="nama"
+            placeholder="Masukkan nama kamu..."
+        >
+
+        <button onclick="mulaiQuiz()">
+            MULAI KUIS
+        </button>
+
+    </div>
+
+
+    <!-- HALAMAN QUIZ -->
+    <div id="quizPage" class="hidden">
+
+        <div class="progress" id="progress"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="options"></div>
+
+    </div>
+
+
+    <!-- HALAMAN HASIL -->
+    <div id="resultPage" class="hidden">
+
+        <div class="result">
+
+            <h1>Hasil Kuis 🎉</h1>
+
+            <p id="hasilNama"></p>
+
+            <div class="score" id="score"></div>
+
+            <h2 id="kategori"></h2>
+
+            <p class="result-text" id="pesan"></p>
+
+            <button onclick="location.reload()">
+                MAIN LAGI
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const pertanyaan = [
+
+    {
+        soal: "Kalau aku lagi bad mood, biasanya aku lebih memilih...",
+        pilihan: [
+            "Diam sendiri",
+            "Cerita ke orang",
+            "Tidur",
+            "Tetap bercanda"
+        ],
+        benar: 0
+    },
+
+    {
+        soal: "Kalau ada masalah, aku biasanya...",
+        pilihan: [
+            "Langsung cerita",
+            "Memendam sendiri",
+            "Minta saran teman",
+            "Menghindari masalah"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Hal kecil yang paling gampang bikin aku senang adalah...",
+        pilihan: [
+            "Dikasih perhatian",
+            "Dikasih makanan",
+            "Diajak jalan",
+            "Dikasih sesuatu"
+        ],
+        benar: 0
+    },
+
+    {
+        soal: "Kalau seseorang membuatku kecewa, aku biasanya...",
+        pilihan: [
+            "Langsung bilang",
+            "Diam tapi berubah",
+            "Memaafkan cepat",
+            "Menjauh"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Aku lebih suka menghabiskan waktu dengan...",
+        pilihan: [
+            "Banyak orang",
+            "Beberapa teman dekat",
+            "Sendirian",
+            "Tergantung mood"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Kalau aku tiba-tiba diam di chat, kemungkinan aku...",
+        pilihan: [
+            "Lagi sibuk",
+            "Lagi bad mood",
+            "Ketiduran",
+            "Lagi malas membalas"
+        ],
+        benar: 3
+    },
+
+    {
+        soal: "Menurutku, teman yang baik itu yang...",
+        pilihan: [
+            "Selalu ada",
+            "Bisa dipercaya",
+            "Bisa diajak bercanda",
+            "Berani menegur saat aku salah"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Kalau aku sedang marah, aku biasanya...",
+        pilihan: [
+            "Banyak ngomong",
+            "Diam",
+            "Jadi cuek",
+            "Nangis"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Aku lebih gampang percaya kepada orang yang...",
+        pilihan: [
+            "Ramah",
+            "Jujur",
+            "Perhatian",
+            "Bisa menjaga rahasia"
+        ],
+        benar: 3
+    },
+
+    {
+        soal: "Kalau diajak pergi secara mendadak, aku biasanya...",
+        pilihan: [
+            "Langsung ikut",
+            "Pikir-pikir dulu",
+            "Menolak",
+            "Tergantung siapa yang mengajak"
+        ],
+        benar: 3
+    },
+
+    {
+        soal: "Kalau aku punya cerita rahasia, aku biasanya...",
+        pilihan: [
+            "Cerita ke satu orang terpercaya",
+            "Cerita ke beberapa teman",
+            "Simpan sendiri",
+            "Tergantung rahasianya"
+        ],
+        benar: 0
+    },
+
+    {
+        soal: "Hal yang paling bikin aku kesal dari seorang teman adalah...",
+        pilihan: [
+            "Bohong",
+            "Menghilang saat dibutuhkan",
+            "Membocorkan rahasia",
+            "Membicarakanku di belakang"
+        ],
+        benar: 2
+    },
+
+    {
+        soal: "Kalau aku melakukan kesalahan, aku biasanya...",
+        pilihan: [
+            "Langsung minta maaf",
+            "Menunggu suasana membaik",
+            "Sulit mengakui",
+            "Menjelaskan alasannya dulu"
+        ],
+        benar: 0
+    },
+
+    {
+        soal: "Aku lebih suka teman yang...",
+        pilihan: [
+            "Lucu",
+            "Pengertian",
+            "Setia",
+            "Bisa diajak ngobrol apa saja"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Kalau aku sedang sedih, hal yang paling mungkin aku lakukan adalah...",
+        pilihan: [
+            "Tidur",
+            "Mendengarkan musik",
+            "Menonton sesuatu",
+            "Menghilang dari chat"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Kalau ada teman baru masuk ke circle, aku biasanya...",
+        pilihan: [
+            "Langsung mengajak ngobrol",
+            "Mengamati dulu",
+            "Menunggu dia mendekat",
+            "Langsung akrab kalau cocok"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Aku lebih takut kehilangan...",
+        pilihan: [
+            "Sahabat",
+            "Orang yang sudah lama bersamaku",
+            "Kepercayaan seseorang",
+            "Hubungan yang sudah dibangun"
+        ],
+        benar: 0
+    },
+
+    {
+        soal: "Kalau teman dekatku punya masalah, aku biasanya...",
+        pilihan: [
+            "Langsung membantu",
+            "Mendengarkan ceritanya",
+            "Memberikan saran",
+            "Menemaninya"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Menurutmu, aku termasuk orang yang...",
+        pilihan: [
+            "Mudah terbuka",
+            "Sulit ditebak",
+            "Cukup sensitif",
+            "Santai dan cuek"
+        ],
+        benar: 1
+    },
+
+    {
+        soal: "Seberapa yakin kamu kalau kamu benar-benar mengenal aku?",
+        pilihan: [
+            "100% yakin",
+            "Lumayan yakin",
+            "Kayaknya cuma tahu sedikit",
+            "Aku ikut kuis cuma buat seru-seruan"
+        ],
+        benar: 0
+    }
+
+];
+
+
+let nomor = 0;
+let skor = 0;
+let nama = "";
+
+
+function mulaiQuiz() {
+
+    nama = document.getElementById("nama").value;
+
+    if (nama.trim() === "") {
+        alert("Masukkan nama kamu dulu ya!");
+        return;
+    }
+
+    document.getElementById("startPage").classList.add("hidden");
+
+    document.getElementById("quizPage").classList.remove("hidden");
+
+    tampilkanSoal();
+
+}
+
+
+function tampilkanSoal() {
+
+    const soal = pertanyaan[nomor];
+
+    document.getElementById("progress").innerText =
+        "Pertanyaan " + (nomor + 1) + " dari " + pertanyaan.length;
+
+    document.getElementById("question").innerText =
+        soal.soal;
+
+    const options = document.getElementById("options");
+
+    options.innerHTML = "";
+
+    soal.pilihan.forEach((pilihan, index) => {
+
+        const div = document.createElement("div");
+
+        div.className = "option";
+
+        div.innerText =
+            String.fromCharCode(65 + index) + ". " + pilihan;
+
+        div.onclick = function() {
+            jawab(index);
+        };
+
+        options.appendChild(div);
+
+    });
+
+}
+
+
+function jawab(jawaban) {
+
+    if (jawaban === pertanyaan[nomor].benar) {
+        skor += 5;
+    }
+
+    nomor++;
+
+    if (nomor < pertanyaan.length) {
+
+        tampilkanSoal();
+
+    } else {
+
+        tampilkanHasil();
+
+    }
+
+}
+
+
+function tampilkanHasil() {
+
+    document.getElementById("quizPage").classList.add("hidden");
+
+    document.getElementById("resultPage").classList.remove("hidden");
+
+    document.getElementById("hasilNama").innerText =
+        "Hasil untuk " + nama;
+
+    document.getElementById("score").innerText =
+        skor + "/100";
+
+
+    if (skor >= 90) {
+
+        document.getElementById("kategori").innerText =
+            "BESTIE SEJATI 🫵🏻💗";
+
+        document.getElementById("pesan").innerText =
+            "Gila, kamu beneran kenal aku! Kamu bukan cuma tahu namaku, tapi juga tahu sifat dan kebiasaanku.";
+
+    }
+
+    else if (skor >= 70) {
+
+        document.getElementById("kategori").innerText =
+            "TEMAN DEKAT 💗";
+
+        document.getElementById("pesan").innerText =
+            "Lumayan banget! Berarti selama ini kamu cukup memperhatikan aku.";
+
+    }
+
+    else if (skor >= 50) {
+
+        document.getElementById("kategori").innerText =
+            "KITA TEMEN KAN? 🤨";
+
+        document.getElementById("pesan").innerText =
+            "Kamu tahu beberapa hal tentang aku, tapi ternyata masih banyak yang belum kamu tahu.";
+
+    }
+
+    else {
+
+        document.getElementById("kategori").innerText =
+            "TEMAN PALSU TERDETEKSI 🚨";
+
+        document.getElementById("pesan").innerText =
+            "Selama ini kamu ngobrol sama aku tapi ternyata belum benar-benar mengenalku 😭";
+
+    }
+
+}
+
+</script>
+
+</body>
+  </html>
